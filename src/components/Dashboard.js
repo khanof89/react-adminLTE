@@ -2,10 +2,111 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Filler,
+    Legend,
+    ArcElement
+} from 'chart.js';
+import { Line, Doughnut } from 'react-chartjs-2';
+import { faker } from '@faker-js/faker';
+import { VectorMap } from '@react-jvectormap/core';
+import { usAea } from '@react-jvectormap/unitedstates';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Filler,
+    Legend,
+    ArcElement
+);
+
+const options = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Chart.js Line Chart',
+        },
+    },
+};
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+const data = {
+    labels,
+    datasets: [
+        {
+            label: 'Digital Goods',
+            backgroundColor: 'rgba(60,141,188,0.9)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: false,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,1)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+            tension: 0.5
+        },
+        {
+            label: 'Electronics',
+            backgroundColor: 'rgba(210, 214, 222, 1)',
+            borderColor: 'rgba(210, 214, 222, 1)',
+            pointRadius: false,
+            pointColor: 'rgba(210, 214, 222, 1)',
+            pointStrokeColor: '#c1c7d1',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+            tension: 0.5
+        }
+    ]
+};
+
+const doughnutData = {
+    labels: [
+        'Instore Sales',
+        'Download Sales',
+        'Mail-Order Sales'
+    ],
+    datasets: [
+        {
+            data: [30, 12, 20],
+            backgroundColor: ['#f56954', '#00a65a', '#f39c12']
+        }
+    ]
+};
+
+const visitorsData = {
+    US: 398, // USA
+    SA: 400, // Saudi Arabia
+    CA: 1000, // Canada
+    DE: 500, // Germany
+    FR: 760, // France
+    CN: 300, // China
+    AU: 700, // Australia
+    BR: 600, // Brazil
+    IN: 800, // India
+    GB: 320, // Great Britain
+    RU: 3000 // Russia
+};
 
 const Dashboard = () => {
-
     const [showPreloader, setShowPreloader] = useState(true);
+    const [salesChart, setSalesChart] = useState('area')
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -122,10 +223,10 @@ const Dashboard = () => {
                                         <div className="card-tools">
                                             <ul className="nav nav-pills ml-auto">
                                                 <li className="nav-item">
-                                                    <a className="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+                                                    <a className="nav-link active" onClick={() => setSalesChart('area')}>Area</a>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <a className="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+                                                    <a className="nav-link" onClick={() => setSalesChart('donut')}>Donut</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -133,12 +234,12 @@ const Dashboard = () => {
                                     <div className="card-body">
                                         <div className="tab-content p-0">
                                             {/* Morris chart - Sales */}
-                                            <div className="chart tab-pane active" id="revenue-chart"
-                                                style={{ position: 'relative', height: '300px' }}>
-                                                <canvas id="revenue-chart-canvas" height="300" style={{ height: '300px' }}></canvas>
+                                            <div className={`chart tab-pane ${salesChart === 'area' ? 'active' : ''}`} id="revenue-chart"
+                                                style={{ position: 'relative', height: '430px' }}>
+                                                <Line options={options} data={data} />
                                             </div>
-                                            <div className="chart tab-pane" id="sales-chart" style={{ position: 'relative', height: '300px' }}>
-                                                <canvas id="sales-chart-canvas" height="300" style={{ height: '300px' }}></canvas>
+                                            <div className={`chart tab-pane ${salesChart === 'donut' ? 'active' : ''}`} id="sales-chart" style={{ position: 'relative', height: '430px', alignItems: 'center' }}>
+                                                <Doughnut data={doughnutData} />
                                             </div>
                                         </div>
                                     </div>{/* /.card-body */}
@@ -501,7 +602,14 @@ const Dashboard = () => {
                                         {/* /.card-tools */}
                                     </div>
                                     <div className="card-body">
-                                        <div id="world-map" style={{ height: '250px', width: '100%' }}></div>
+                                        <VectorMap map={usAea} backgroundColor='transparent' style={{ height: '350px' }}
+                                            series={{
+                                                regions: [{
+                                                    values: visitorsData,
+                                                    scale: ['#ffffff', '#0154ad'],
+                                                    normalizeFunction: 'polynomial'
+                                                }]
+                                            }} />
                                     </div>
                                     {/* /.card-body*/}
                                     <div className="card-footer bg-transparent">
