@@ -18,7 +18,11 @@ import { Line, Doughnut } from 'react-chartjs-2';
 import { faker } from '@faker-js/faker';
 import { VectorMap } from '@react-jvectormap/core';
 import { usAea } from '@react-jvectormap/unitedstates';
-
+import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
+import Calendar from 'react-calendar';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import 'react-calendar/dist/Calendar.css';
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -75,6 +79,24 @@ const data = {
         }
     ]
 };
+
+const salesGraphData = {
+    labels: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2', '2012 Q3', '2012 Q4', '2013 Q1', '2013 Q2'],
+    datasets: [
+        {
+            label: 'Digital Goods',
+            fill: true,
+            borderWidth: 2,
+            spanGaps: true,
+            borderColor: '#efefef',
+            pointRadius: 3,
+            pointHoverRadius: 7,
+            pointColor: '#efefef',
+            pointBackgroundColor: '#efefef',
+            data: [2666, 2778, 4912, 3767, 6810, 5670, 4820, 15073, 10687, 8432]
+        }
+    ]
+}
 
 const doughnutData = {
     labels: [
@@ -223,10 +245,10 @@ const Dashboard = () => {
                                         <div className="card-tools">
                                             <ul className="nav nav-pills ml-auto">
                                                 <li className="nav-item">
-                                                    <a className="nav-link active" onClick={() => setSalesChart('area')}>Area</a>
+                                                    <span className={`nav-link ${salesChart === 'area' ? 'active' : ''}`} style={{ cursor: 'pointer' }} onClick={() => setSalesChart('area')}>Area</span>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <a className="nav-link" onClick={() => setSalesChart('donut')}>Donut</a>
+                                                    <span className={`nav-link ${salesChart === 'donut' ? 'active' : ''}`} style={{ cursor: 'pointer' }} onClick={() => setSalesChart('donut')}>Donut</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -615,17 +637,27 @@ const Dashboard = () => {
                                     <div className="card-footer bg-transparent">
                                         <div className="row">
                                             <div className="col-4 text-center">
-                                                <div id="sparkline-1"></div>
+                                                <Sparklines data={[1000, 1200, 920, 927, 931, 1027, 819, 930, 10]} width={60} height={20}>
+                                                    <SparklinesLine color="white" />
+                                                    <SparklinesSpots />
+                                                </Sparklines>
                                                 <div className="text-white">Visitors</div>
                                             </div>
                                             {/* ./col */}
                                             <div className="col-4 text-center">
-                                                <div id="sparkline-2"></div>
+                                                <Sparklines data={[515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921]} width={60} height={20}>
+                                                    <SparklinesLine color="white" />
+                                                    <SparklinesSpots />
+                                                </Sparklines>
                                                 <div className="text-white">Online</div>
                                             </div>
                                             {/* ./col */}
                                             <div className="col-4 text-center">
                                                 <div id="sparkline-3"></div>
+                                                <Sparklines data={[15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21]} width={60} height={20}>
+                                                    <SparklinesLine color="white" />
+                                                    <SparklinesSpots />
+                                                </Sparklines>
                                                 <div className="text-white">Sales</div>
                                             </div>
                                             {/* ./col */}
@@ -653,36 +685,9 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                     <div className="card-body">
-                                        <canvas className="chart" id="line-chart" style={{ minHeight: '250px', height: '250px', maxHeight: '250px', maxWidth: '100%' }}></canvas>
+                                        <Line options={{ responsive: true }} data={salesGraphData} />
                                     </div>
                                     {/* /.card-body */}
-                                    <div className="card-footer bg-transparent">
-                                        <div className="row">
-                                            <div className="col-4 text-center">
-                                                <input type="text" className="knob" data-readonly="true" value="20" data-width="60" data-height="60"
-                                                    data-fgColor="#39CCCC" />
-
-                                                <div className="text-white">Mail-Orders</div>
-                                            </div>
-                                            {/* ./col */}
-                                            <div className="col-4 text-center">
-                                                <input type="text" className="knob" data-readonly="true" value="50" data-width="60" data-height="60"
-                                                    data-fgColor="#39CCCC" />
-
-                                                <div className="text-white">Online</div>
-                                            </div>
-                                            {/* ./col */}
-                                            <div className="col-4 text-center">
-                                                <input type="text" className="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                                                    data-fgColor="#39CCCC" />
-
-                                                <div className="text-white">In-Store</div>
-                                            </div>
-                                            {/* ./col */}
-                                        </div>
-                                        {/* /.row */}
-                                    </div>
-                                    {/* /.card-footer */}
                                 </div>
                                 {/* /.card */}
 
@@ -718,9 +723,9 @@ const Dashboard = () => {
                                         {/* /. tools */}
                                     </div>
                                     {/* /.card-header */}
-                                    <div className="card-body pt-0">
+                                    <div className="card-body pt-0" align="center">
                                         {/*The calendar */}
-                                        <div id="calendar" style={{ width: '100%' }}></div>
+                                        <Calendar className="bootstrap-datetimepicker-widget usetwentyfour" width="100%" />
                                     </div>
                                     {/* /.card-body */}
                                 </div>
