@@ -9,11 +9,10 @@ const Navbar = () => {
         } else {
             document.body.classList.add('sidebar-collapse');
         }
-
     }
 
     return (
-        <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+        <nav className="main-header navbar navbar-expand navbar-dark">
             {/* Left navbar links */}
             <ul className="navbar-nav">
                 <li className="nav-item">
