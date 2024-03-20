@@ -12,7 +12,6 @@ function App() {
   const [activePage, setActivePage] = useState('dashboard');
 
   useEffect(() => {
-    //const bodyElement = document.getElementsByTagName('body')[0];
     if (activePage === 'dashboardDark') {
       document.body.classList.add('dark-mode');
     } else {
