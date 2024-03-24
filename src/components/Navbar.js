@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { ThemeContext } from './Contexts/ThemeContext';
 
 const Navbar = () => {
+    const { theme } = useContext(ThemeContext);
 
     const toggleSidebar = () => {
         const bodyElement = document.getElementsByTagName('body')[0];
@@ -12,7 +14,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="main-header navbar navbar-expand navbar-dark">
+        <nav className={`main-header navbar navbar-expand ${theme.navbar}`}>
             {/* Left navbar links */}
             <ul className="navbar-nav">
                 <li className="nav-item">

@@ -1,41 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Dashboard from './components/Dashboard';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import Footer from './components/Footer';
 import DashboardDark from './components/DashboardDark';
+import { Routes, Route, useLocation } from "react-router-dom";
+import Layout from './components/Layout';
+import theme from './helpers/theme';
+import { ThemeContext } from './components/Contexts/ThemeContext';
 
 function App() {
-  const [showPreloader, setShowPreloader] = useState(true);
-  const [activePage, setActivePage] = useState('dashboard');
+  const [currentTheme, setCurrentTheme] = useState('light');
+  const location = useLocation();
 
   useEffect(() => {
-    if (activePage === 'dashboardDark') {
-      document.body.classList.add('dark-mode');
+    if (location.pathname === '/dashboard') {
+      setCurrentTheme(theme.light);
+      document.body.classList.remove(theme.dark.body);
     } else {
-      document.body.classList.remove('dark-mode');
+      setCurrentTheme(theme.dark);
+      document.body.classList.add(theme.dark.body);
     }
-  }, [activePage]);
+  }, [location]);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setShowPreloader(false);
-    }, 2000)
-  }, []);
   return (
-    <div className="wrapper">
-      {/* Preloader */}
-      {showPreloader && <div className="preloader flex-column justify-content-center align-items-center">
-        <img className="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60" />
-      </div>}
-      <Navbar />
-      <Sidebar />
-      {activePage === 'dashboard' ? <Dashboard /> : <DashboardDark />}
-      <Footer />
-    </div>
-
+    <ThemeContext.Provider value={{ theme: currentTheme }}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="dashboard" index element={<Dashboard />} />
+          <Route path="dashboard-dark" element={<DashboardDark />} />
+        </Route>
+      </Routes>
+    </ThemeContext.Provider>
   );
 }
 
