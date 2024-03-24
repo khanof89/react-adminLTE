@@ -8,15 +8,12 @@ import theme from './helpers/theme';
 import { ThemeContext } from './components/Contexts/ThemeContext';
 
 function App() {
-  const [activePage, setActivePage] = useState('dashboardDark');
   const [currentTheme, setCurrentTheme] = useState('light');
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname);
     if (location.pathname === '/dashboard') {
       setCurrentTheme(theme.light);
-      console.log(theme.dark.body);
       document.body.classList.remove(theme.dark.body);
     } else {
       setCurrentTheme(theme.dark);
